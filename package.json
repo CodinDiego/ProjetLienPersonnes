@@ -1,20 +1,14 @@
 {
   "name": "relation-graph",
   "private": true,
-  "version": "0.2.0",
+  "version": "0.3.0",
   "type": "module",
   "scripts": {
-    "dev:front": "vite",
-    "dev:back": "node --watch server.js",
-    "dev": "concurrently \"npm run dev:back\" \"npm run dev:front\"",
+    "dev": "vite",
     "build": "vite build",
-    "start": "node server.js"
+    "preview": "vite preview"
   },
   "dependencies": {
-    "concurrently": "^8.2.2",
-    "dotenv": "^16.4.5",
-    "express": "^4.19.2",
-    "express-session": "^1.18.0",
     "react": "^18.3.1",
     "react-dom": "^18.3.1"
   },
