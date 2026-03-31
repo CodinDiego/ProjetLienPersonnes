@@ -271,17 +271,13 @@ function RelTypesPanel({ relTypes, onUpdate }) {
     const label = labelInput.trim();
     if (!label) return;
     if (relTypes.find((r) => r.label.toLowerCase() === label.toLowerCase())) return;
-    const newType = {
-      id: crypto.randomUUID(),
-      label,
-      color: colorInput,
-      emoji: emojiInput,
-    };
+    const newType = { id: crypto.randomUUID(), label, color: colorInput, emoji: emojiInput };
     const updated = [...relTypes, newType];
     onUpdate(updated);
     setLabelInput("");
-    setColorIdx((c) => c + 1);
-    setColorInput(REL_COLORS[(colorIdx + 1) % REL_COLORS.length]);
+    const next = (colorIdx + 1) % REL_COLORS.length;
+    setColorIdx(next);
+    setColorInput(REL_COLORS[next]);
     setEmojiInput("🔗");
   };
 
@@ -292,16 +288,31 @@ function RelTypesPanel({ relTypes, onUpdate }) {
   return (
       <div className="panel">
         <div className="rel-type-form">
+
+          {/* Ligne emoji + nom + bouton */}
           <div className="rel-type-row">
             <input className="input emoji-input" value={emojiInput}
                    onChange={(e) => setEmojiInput(e.target.value)} maxLength={2} placeholder="🔗" />
             <input className="input" placeholder="Nom du type..." style={{ flex: 1 }}
                    value={labelInput} onChange={(e) => setLabelInput(e.target.value)}
                    onKeyDown={(e) => e.key === "Enter" && addType()} />
-            <input type="color" className="color-picker" value={colorInput}
-                   onChange={(e) => setColorInput(e.target.value)} title="Couleur" />
             <button className="btn-add" onClick={addType}>＋</button>
           </div>
+
+          {/* Palette de couleurs cliquables */}
+          <div className="color-palette">
+            {REL_COLORS.map((c) => (
+                <button
+                    key={c}
+                    className={`color-swatch ${colorInput === c ? "active" : ""}`}
+                    style={{ background: c }}
+                    onClick={() => setColorInput(c)}
+                    title={c}
+                />
+            ))}
+          </div>
+
+          {/* Grille d'emojis */}
           <div className="emoji-grid">
             {COMMON_EMOJIS.map((em) => (
                 <button key={em} className={`emoji-btn ${emojiInput === em ? "active" : ""}`}
@@ -398,8 +409,7 @@ export default function App() {
       <div className="app">
         <header className="header">
           <div className="header-inner">
-            <span className="logo">◈ RelGraph</span>
-            <p className="tagline">Visualisez vos liens humains</p>
+            <span className="logo">◈ Graphique</span>
           </div>
           <div className="header-right">
             <button className="btn-sidebar-toggle" onClick={() => setSidebarOpen((o) => !o)} title={sidebarOpen ? "Réduire le panneau" : "Ouvrir le panneau"}>
@@ -414,10 +424,10 @@ export default function App() {
           <aside className={`sidebar ${sidebarOpen ? "" : "sidebar--closed"}`}>
             <div className="tabs">
               <button className={`tab ${tab === "persons" ? "active" : ""}`} onClick={() => setTab("persons")}>
-                👤 Personnes
+                 Personnes
               </button>
               <button className={`tab ${tab === "relations" ? "active" : ""}`} onClick={() => setTab("relations")}>
-                🔗 Liens
+                 Liens
               </button>
               <button className={`tab ${tab === "types" ? "active" : ""}`} onClick={() => setTab("types")}>
                 ✦ Types

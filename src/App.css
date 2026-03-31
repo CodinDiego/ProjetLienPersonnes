@@ -351,18 +351,7 @@ body {
   font-size: 1.1rem;
   padding: 8px 4px;
 }
-.color-picker {
-  width: 36px;
-  height: 36px;
-  min-width: 36px;
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
-  background: none;
-  cursor: pointer;
-  padding: 2px;
-}
-.color-picker::-webkit-color-swatch-wrapper { padding: 0; }
-.color-picker::-webkit-color-swatch { border-radius: 6px; border: none; }
+/* color-picker natif supprimé — remplacé par .color-palette */
 
 .emoji-grid {
   display: flex;
@@ -417,6 +406,7 @@ body {
   .canvas-area {
     flex: 1;
     min-height: 0;
+    position: relative;
   }
 
   /* Sidebar devient un panneau bas fixe */
@@ -530,11 +520,49 @@ body {
     transition: height 0.25s ease, max-height 0.25s ease, opacity 0.2s ease;
   }
   .sidebar--closed {
-    width: 100% !important;
-    min-width: unset !important;
     height: 0 !important;
     max-height: 0 !important;
+    min-height: 0 !important;
+    overflow: hidden !important;
     opacity: 0;
     border: none;
+    flex-shrink: 0;
+  }
+}
+
+/* ── Palette de couleurs ─────────────────────────────────────── */
+.color-palette {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  padding: 4px 0;
+}
+
+.color-swatch {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  border: 2.5px solid transparent;
+  cursor: pointer;
+  transition: transform 0.12s, border-color 0.12s;
+  outline: none;
+  flex-shrink: 0;
+}
+.color-swatch:hover { transform: scale(1.15); }
+.color-swatch.active {
+  border-color: white;
+  transform: scale(1.18);
+  box-shadow: 0 0 0 2px rgba(255,255,255,0.25);
+}
+
+@media (max-width: 640px) {
+  .color-swatch {
+    width: 38px;
+    height: 38px;
+  }
+  .emoji-btn {
+    width: 36px;
+    height: 36px;
+    font-size: 16px;
   }
 }
