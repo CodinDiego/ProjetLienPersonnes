@@ -337,6 +337,7 @@ export default function App() {
   const [relType, setRelType]   = useState(() => loadRelTypes()[0]?.id || "");
   const [colorIdx, setColorIdx] = useState(() => loadFromStorage().nodes.length);
   const [tab, setTab]           = useState("persons");
+  const [sidebarOpen, setSidebarOpen] = useState(true);
 
   const save = useCallback((n, e) => saveToStorage(n, e), []);
 
@@ -401,13 +402,16 @@ export default function App() {
             <p className="tagline">Visualisez vos liens humains</p>
           </div>
           <div className="header-right">
+            <button className="btn-sidebar-toggle" onClick={() => setSidebarOpen((o) => !o)} title={sidebarOpen ? "Réduire le panneau" : "Ouvrir le panneau"}>
+              {sidebarOpen ? "◀" : "▶"}
+            </button>
             <span className="save-status save-status--saved">💾 Sauvegarde auto</span>
             <button className="btn-logout" onClick={handleLogout}>⎋ Déconnexion</button>
           </div>
         </header>
 
         <main className="main">
-          <aside className="sidebar">
+          <aside className={`sidebar ${sidebarOpen ? "" : "sidebar--closed"}`}>
             <div className="tabs">
               <button className={`tab ${tab === "persons" ? "active" : ""}`} onClick={() => setTab("persons")}>
                 👤 Personnes
@@ -491,6 +495,13 @@ export default function App() {
           </aside>
 
           <section className="canvas-area">
+            <button
+                className="btn-fab"
+                onClick={() => setSidebarOpen((o) => !o)}
+                title={sidebarOpen ? "Masquer" : "Afficher le panneau"}
+            >
+              {sidebarOpen ? "✕" : "☰"}
+            </button>
             {nodes.length === 0 ? (
                 <div className="empty-graph">
                   <div className="empty-icon">◈</div>
