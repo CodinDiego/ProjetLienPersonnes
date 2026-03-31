@@ -20,14 +20,14 @@ const DEFAULT_RELATION_TYPES = [
   { id: "autre",    label: "Autre",    color: "#a78bfa", emoji: "🔗" },
 ];
 
-const STORAGE_KEY    = "relgraph_data";
-const RELTYPES_KEY   = "relgraph_reltypes";
-const AUTH_KEY       = "relgraph_auth";
-const PASSWORD       = import.meta.env.VITE_PASSWORD;
+const STORAGE_KEY  = "relgraph_data";
+const RELTYPES_KEY = "relgraph_reltypes";
+const AUTH_KEY     = "relgraph_auth";
+const PASSWORD     = import.meta.env.VITE_PASSWORD;
 
 const BASE_RADIUS    = 28;
-const CHAR_WIDTH     = 5.5;   // px par caractère à fontSize 13
-const RADIUS_PADDING = 14;    // padding horizontal dans le cercle
+const CHAR_WIDTH     = 5.5;
+const RADIUS_PADDING = 14;
 
 // ─── Helpers ─────────────────────────────────────────────────
 
@@ -60,11 +60,9 @@ function loadFromStorage() {
     return JSON.parse(raw);
   } catch { return { nodes: [], edges: [] }; }
 }
-
 function saveToStorage(nodes, edges) {
   localStorage.setItem(STORAGE_KEY, JSON.stringify({ nodes, edges }));
 }
-
 function loadRelTypes() {
   try {
     const raw = localStorage.getItem(RELTYPES_KEY);
@@ -72,7 +70,6 @@ function loadRelTypes() {
     return JSON.parse(raw);
   } catch { return DEFAULT_RELATION_TYPES; }
 }
-
 function saveRelTypes(types) {
   localStorage.setItem(RELTYPES_KEY, JSON.stringify(types));
 }
@@ -113,13 +110,15 @@ function LoginScreen({ onLogin }) {
 
 // ─── Graph Canvas ─────────────────────────────────────────────
 
-function GraphCanvas({ nodes, edges, relTypes }) {
+function GraphCanvas({ nodes, edges, relTypes, containerSize }) {
   const svgRef = useRef(null);
   const [positions, setPositions] = useState({});
   const [dragging, setDragging]   = useState(null);
   const [offset, setOffset]       = useState({ x: 0, y: 0 });
 
-  // Calcul des rayons par nœud
+  const W = containerSize.w || 800;
+  const H = containerSize.h || 600;
+
   const radii = Object.fromEntries(nodes.map((n) => [n.id, nodeRadius(n.name)]));
 
   useEffect(() => {
@@ -130,39 +129,13 @@ function GraphCanvas({ nodes, edges, relTypes }) {
       });
       nodes.forEach((n) => {
         if (!next[n.id]) {
-          const existing = nodes
-              .filter((m) => next[m.id])
-              .map((m) => ({ ...next[m.id], id: m.id }));
-          next[n.id] = findFreePosition(existing, radii);
+          const existing = nodes.filter((m) => next[m.id]).map((m) => ({ ...next[m.id], id: m.id }));
+          next[n.id] = findFreePosition(existing, radii, W, H);
         }
       });
       return next;
     });
-  }, [nodes]);
-
-  const handleMouseDown = useCallback((e, id) => {
-    e.preventDefault();
-    const svg = svgRef.current;
-    const pt  = svg.createSVGPoint();
-    pt.x = e.clientX; pt.y = e.clientY;
-    const svgP = pt.matrixTransform(svg.getScreenCTM().inverse());
-    setDragging(id);
-    setOffset({ x: svgP.x - (positions[id]?.x || 0), y: svgP.y - (positions[id]?.y || 0) });
-  }, [positions]);
-
-  const handleMouseMove = useCallback((e) => {
-    if (!dragging) return;
-    const svg = svgRef.current;
-    const pt  = svg.createSVGPoint();
-    pt.x = e.clientX; pt.y = e.clientY;
-    const svgP = pt.matrixTransform(svg.getScreenCTM().inverse());
-    setPositions((prev) => ({
-      ...prev,
-      [dragging]: { x: svgP.x - offset.x, y: svgP.y - offset.y },
-    }));
-  }, [dragging, offset]);
-
-  const handleMouseUp = useCallback(() => setDragging(null), []);
+  }, [nodes, W, H]);
 
   const getSVGPoint = useCallback((clientX, clientY) => {
     const svg = svgRef.current;
@@ -170,6 +143,21 @@ function GraphCanvas({ nodes, edges, relTypes }) {
     pt.x = clientX; pt.y = clientY;
     return pt.matrixTransform(svg.getScreenCTM().inverse());
   }, []);
+
+  const handleMouseDown = useCallback((e, id) => {
+    e.preventDefault();
+    const svgP = getSVGPoint(e.clientX, e.clientY);
+    setDragging(id);
+    setOffset({ x: svgP.x - (positions[id]?.x || 0), y: svgP.y - (positions[id]?.y || 0) });
+  }, [positions, getSVGPoint]);
+
+  const handleMouseMove = useCallback((e) => {
+    if (!dragging) return;
+    const svgP = getSVGPoint(e.clientX, e.clientY);
+    setPositions((prev) => ({ ...prev, [dragging]: { x: svgP.x - offset.x, y: svgP.y - offset.y } }));
+  }, [dragging, offset, getSVGPoint]);
+
+  const handleMouseUp = useCallback(() => setDragging(null), []);
 
   const handleTouchStart = useCallback((e, id) => {
     e.preventDefault();
@@ -184,16 +172,13 @@ function GraphCanvas({ nodes, edges, relTypes }) {
     e.preventDefault();
     const touch = e.touches[0];
     const svgP  = getSVGPoint(touch.clientX, touch.clientY);
-    setPositions((prev) => ({
-      ...prev,
-      [dragging]: { x: svgP.x - offset.x, y: svgP.y - offset.y },
-    }));
+    setPositions((prev) => ({ ...prev, [dragging]: { x: svgP.x - offset.x, y: svgP.y - offset.y } }));
   }, [dragging, offset, getSVGPoint]);
 
   return (
-      <svg ref={svgRef} viewBox="0 0 800 600" className="graph-svg"
+      <svg ref={svgRef} viewBox={`0 0 ${W} ${H}`} className="graph-svg"
            onMouseMove={handleMouseMove} onMouseUp={handleMouseUp} onMouseLeave={handleMouseUp}
-           onTouchMove={(e) => handleTouchMove(e)} onTouchEnd={handleMouseUp}
+           onTouchMove={handleTouchMove} onTouchEnd={handleMouseUp}
            style={{ touchAction: "none" }}>
         <defs>
           {relTypes.map((r) => (
@@ -203,7 +188,6 @@ function GraphCanvas({ nodes, edges, relTypes }) {
           ))}
         </defs>
 
-        {/* Edges */}
         {edges.map((edge, i) => {
           const from = positions[edge.from];
           const to   = positions[edge.to];
@@ -232,7 +216,6 @@ function GraphCanvas({ nodes, edges, relTypes }) {
           );
         })}
 
-        {/* Nodes */}
         {nodes.map((node) => {
           const pos = positions[node.id];
           if (!pos) return null;
@@ -272,8 +255,7 @@ function RelTypesPanel({ relTypes, onUpdate }) {
     if (!label) return;
     if (relTypes.find((r) => r.label.toLowerCase() === label.toLowerCase())) return;
     const newType = { id: crypto.randomUUID(), label, color: colorInput, emoji: emojiInput };
-    const updated = [...relTypes, newType];
-    onUpdate(updated);
+    onUpdate([...relTypes, newType]);
     setLabelInput("");
     const next = (colorIdx + 1) % REL_COLORS.length;
     setColorIdx(next);
@@ -281,15 +263,9 @@ function RelTypesPanel({ relTypes, onUpdate }) {
     setEmojiInput("🔗");
   };
 
-  const removeType = (id) => {
-    onUpdate(relTypes.filter((r) => r.id !== id));
-  };
-
   return (
       <div className="panel">
         <div className="rel-type-form">
-
-          {/* Ligne emoji + nom + bouton */}
           <div className="rel-type-row">
             <input className="input emoji-input" value={emojiInput}
                    onChange={(e) => setEmojiInput(e.target.value)} maxLength={2} placeholder="🔗" />
@@ -298,21 +274,12 @@ function RelTypesPanel({ relTypes, onUpdate }) {
                    onKeyDown={(e) => e.key === "Enter" && addType()} />
             <button className="btn-add" onClick={addType}>＋</button>
           </div>
-
-          {/* Palette de couleurs cliquables */}
           <div className="color-palette">
             {REL_COLORS.map((c) => (
-                <button
-                    key={c}
-                    className={`color-swatch ${colorInput === c ? "active" : ""}`}
-                    style={{ background: c }}
-                    onClick={() => setColorInput(c)}
-                    title={c}
-                />
+                <button key={c} className={`color-swatch ${colorInput === c ? "active" : ""}`}
+                        style={{ background: c }} onClick={() => setColorInput(c)} title={c} />
             ))}
           </div>
-
-          {/* Grille d'emojis */}
           <div className="emoji-grid">
             {COMMON_EMOJIS.map((em) => (
                 <button key={em} className={`emoji-btn ${emojiInput === em ? "active" : ""}`}
@@ -320,14 +287,13 @@ function RelTypesPanel({ relTypes, onUpdate }) {
             ))}
           </div>
         </div>
-
         <ul className="list">
           {relTypes.length === 0 && <li className="empty">Aucun type de relation</li>}
           {relTypes.map((r) => (
               <li key={r.id} className="list-item">
                 <span className="rel-type-dot" style={{ background: r.color }}>{r.emoji}</span>
                 <span className="item-name" style={{ color: r.color }}>{r.label}</span>
-                <button className="btn-remove" onClick={() => removeType(r.id)}>✕</button>
+                <button className="btn-remove" onClick={() => onUpdate(relTypes.filter((x) => x.id !== r.id))}>✕</button>
               </li>
           ))}
         </ul>
@@ -350,24 +316,30 @@ export default function App() {
   const [tab, setTab]           = useState("persons");
   const [sidebarOpen, setSidebarOpen] = useState(true);
 
+  // Taille réelle du canvas mesurée en temps réel
+  const canvasRef = useRef(null);
+  const [containerSize, setContainerSize] = useState({ w: 800, h: 600 });
+
+  useEffect(() => {
+    const el = canvasRef.current;
+    if (!el) return;
+    const ro = new ResizeObserver(([entry]) => {
+      const { width, height } = entry.contentRect;
+      if (width > 0 && height > 0) setContainerSize({ w: Math.round(width), h: Math.round(height) });
+    });
+    ro.observe(el);
+    return () => ro.disconnect();
+  }, []);
+
   const save = useCallback((n, e) => saveToStorage(n, e), []);
 
-  // S'assurer que relType est valide quand relTypes change
   useEffect(() => {
-    if (!relTypes.find((r) => r.id === relType)) {
-      setRelType(relTypes[0]?.id || "");
-    }
+    if (!relTypes.find((r) => r.id === relType)) setRelType(relTypes[0]?.id || "");
   }, [relTypes]);
 
-  const handleLogout = () => {
-    localStorage.removeItem(AUTH_KEY);
-    setAuth(false);
-  };
+  const handleLogout = () => { localStorage.removeItem(AUTH_KEY); setAuth(false); };
 
-  const handleRelTypesUpdate = (updated) => {
-    setRelTypes(updated);
-    saveRelTypes(updated);
-  };
+  const handleRelTypesUpdate = (updated) => { setRelTypes(updated); saveRelTypes(updated); };
 
   const addNode = () => {
     const name = nameInput.trim();
@@ -409,14 +381,20 @@ export default function App() {
       <div className="app">
         <header className="header">
           <div className="header-inner">
-            <span className="logo">◈ Graphique</span>
+            <span className="logo">◈ RelGraph</span>
+            <p className="tagline">Visualisez vos liens humains</p>
           </div>
           <div className="header-right">
-            <button className="btn-sidebar-toggle" onClick={() => setSidebarOpen((o) => !o)} title={sidebarOpen ? "Réduire le panneau" : "Ouvrir le panneau"}>
-              {sidebarOpen ? "◀" : "▶"}
-            </button>
             <span className="save-status save-status--saved">💾 Sauvegarde auto</span>
-            <button className="btn-logout" onClick={handleLogout}>⎋ Déconnexion</button>
+            {/* Bouton unique, visible desktop ET mobile */}
+            <button
+                className="btn-toggle"
+                onClick={() => setSidebarOpen((o) => !o)}
+                title={sidebarOpen ? "Plein écran" : "Afficher le panneau"}
+            >
+              {sidebarOpen ? "⛶" : "☰"}
+            </button>
+            <button className="btn-logout" onClick={handleLogout}>⎋</button>
           </div>
         </header>
 
@@ -424,10 +402,10 @@ export default function App() {
           <aside className={`sidebar ${sidebarOpen ? "" : "sidebar--closed"}`}>
             <div className="tabs">
               <button className={`tab ${tab === "persons" ? "active" : ""}`} onClick={() => setTab("persons")}>
-                 Personnes
+                👤 Personnes
               </button>
               <button className={`tab ${tab === "relations" ? "active" : ""}`} onClick={() => setTab("relations")}>
-                 Liens
+                🔗 Liens
               </button>
               <button className={`tab ${tab === "types" ? "active" : ""}`} onClick={() => setTab("types")}>
                 ✦ Types
@@ -459,7 +437,7 @@ export default function App() {
                 <div className="panel">
                   {relTypes.length === 0 ? (
                       <p className="empty" style={{ padding: "12px 0" }}>
-                        Crée d'abord un type de relation dans l'onglet ✦ Types
+                        Crée d'abord un type dans l'onglet ✦ Types
                       </p>
                   ) : (
                       <div className="relation-form">
@@ -504,21 +482,14 @@ export default function App() {
             )}
           </aside>
 
-          <section className="canvas-area">
-            <button
-                className="btn-fab"
-                onClick={() => setSidebarOpen((o) => !o)}
-                title={sidebarOpen ? "Masquer" : "Afficher le panneau"}
-            >
-              {sidebarOpen ? "✕" : "☰"}
-            </button>
+          <section className="canvas-area" ref={canvasRef}>
             {nodes.length === 0 ? (
                 <div className="empty-graph">
                   <div className="empty-icon">◈</div>
                   <p>Ajoutez des personnes pour voir le graphe</p>
                 </div>
             ) : (
-                <GraphCanvas nodes={nodes} edges={edges} relTypes={relTypes} />
+                <GraphCanvas nodes={nodes} edges={edges} relTypes={relTypes} containerSize={containerSize} />
             )}
           </section>
         </main>

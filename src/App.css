@@ -455,80 +455,6 @@ body {
   }
 }
 
-/* ── Sidebar toggle ─────────────────────────────────────────── */
-
-/* Bouton dans le header (desktop) */
-.btn-sidebar-toggle {
-  background: none;
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
-  color: var(--text-muted);
-  font-size: 0.75rem;
-  padding: 6px 10px;
-  cursor: pointer;
-  transition: all 0.15s;
-  line-height: 1;
-}
-.btn-sidebar-toggle:hover { color: var(--accent); border-color: var(--accent); }
-
-/* Desktop : sidebar s'effondre en largeur */
-.sidebar {
-  transition: width 0.25s ease, min-width 0.25s ease, opacity 0.2s ease;
-}
-.sidebar--closed {
-  width: 0 !important;
-  min-width: 0 !important;
-  opacity: 0;
-  overflow: hidden;
-  border: none;
-}
-
-/* Bouton flottant (FAB) — visible uniquement sur mobile */
-.btn-fab {
-  display: none;
-}
-
-@media (max-width: 640px) {
-  /* Cacher le toggle du header sur mobile, le FAB prend le relais */
-  .btn-sidebar-toggle { display: none; }
-
-  /* FAB flottant en bas à droite */
-  .btn-fab {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    position: absolute;
-    bottom: 16px;
-    right: 16px;
-    z-index: 20;
-    width: 48px;
-    height: 48px;
-    border-radius: 50%;
-    background: var(--accent);
-    color: #0d1117;
-    border: none;
-    font-size: 1.2rem;
-    font-weight: 700;
-    cursor: pointer;
-    box-shadow: 0 4px 16px rgba(0,0,0,0.4);
-    transition: transform 0.15s, opacity 0.15s;
-  }
-  .btn-fab:hover { transform: scale(1.08); }
-
-  /* Mobile : sidebar s'effondre en hauteur */
-  .sidebar {
-    transition: height 0.25s ease, max-height 0.25s ease, opacity 0.2s ease;
-  }
-  .sidebar--closed {
-    height: 0 !important;
-    max-height: 0 !important;
-    min-height: 0 !important;
-    overflow: hidden !important;
-    opacity: 0;
-    border: none;
-    flex-shrink: 0;
-  }
-}
 
 /* ── Palette de couleurs ─────────────────────────────────────── */
 .color-palette {
@@ -565,4 +491,63 @@ body {
     height: 36px;
     font-size: 16px;
   }
+}
+
+/* ── Bouton toggle unique (desktop + mobile) ─────────────────── */
+.btn-toggle {
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  color: var(--accent);
+  font-size: 1.1rem;
+  width: 36px;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.15s;
+  flex-shrink: 0;
+}
+.btn-toggle:hover { border-color: var(--accent); background: rgba(74,222,128,0.08); }
+
+/* Logout plus compact sur mobile */
+.btn-logout { white-space: nowrap; }
+
+/* Desktop : sidebar s'effondre en largeur */
+.sidebar {
+  transition: width 0.25s ease, min-width 0.25s ease, opacity 0.2s ease;
+}
+.sidebar--closed {
+  width: 0 !important;
+  min-width: 0 !important;
+  opacity: 0;
+  overflow: hidden;
+  border: none;
+}
+
+@media (max-width: 640px) {
+  /* Mobile : sidebar s'effondre en hauteur */
+  .sidebar {
+    transition: height 0.25s ease, max-height 0.25s ease, opacity 0.2s ease;
+  }
+  .sidebar--closed {
+    height: 0 !important;
+    max-height: 0 !important;
+    min-height: 0 !important;
+    overflow: hidden !important;
+    opacity: 0;
+    border: none;
+    flex-shrink: 0;
+  }
+
+  /* Bouton toggle plus grand sur mobile */
+  .btn-toggle {
+    width: 42px;
+    height: 42px;
+    font-size: 1.3rem;
+  }
+
+  /* Logout : icône seulement sur mobile */
+  .btn-logout { font-size: 0.7rem; padding: 5px 8px; }
 }
