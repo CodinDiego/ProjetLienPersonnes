@@ -395,3 +395,72 @@ body {
   font-size: 12px;
   flex-shrink: 0;
 }
+
+/* ── Mobile ─────────────────────────────────────────────────── */
+@media (max-width: 640px) {
+
+  body { overflow: hidden; }
+
+  /* Header compact */
+  .header { padding: 10px 16px; }
+  .logo { font-size: 1.1rem; }
+  .tagline { display: none; }
+  .save-status { display: none; }
+  .btn-logout { font-size: 0.7rem; padding: 5px 8px; }
+
+  /* Layout vertical : canvas en haut, sidebar en bas */
+  .main {
+    flex-direction: column;
+  }
+
+  /* Canvas prend le reste de la hauteur au-dessus de la sidebar */
+  .canvas-area {
+    flex: 1;
+    min-height: 0;
+  }
+
+  /* Sidebar devient un panneau bas fixe */
+  .sidebar {
+    width: 100%;
+    min-width: unset;
+    height: 52vh;
+    max-height: 52vh;
+    border-right: none;
+    border-top: 1px solid var(--border);
+    flex-shrink: 0;
+  }
+
+  /* Tabs plus grands pour les doigts */
+  .tab {
+    padding: 14px 4px;
+    font-size: 0.72rem;
+  }
+
+  /* Inputs plus hauts pour le tactile */
+  .input, .select {
+    padding: 12px 12px;
+    font-size: 1rem;
+  }
+
+  /* Boutons plus larges */
+  .btn-add {
+    padding: 0 18px;
+    font-size: 1.2rem;
+    min-height: 44px;
+  }
+  .btn-add.full { padding: 13px; }
+
+  .btn-remove {
+    padding: 6px 8px;
+    font-size: 0.9rem;
+  }
+
+  .list-item { padding: 10px 12px; }
+  .item-name { font-size: 0.9rem; }
+
+  /* Login card adapté mobile */
+  .login-card {
+    width: calc(100vw - 40px);
+    padding: 32px 24px;
+  }
+}

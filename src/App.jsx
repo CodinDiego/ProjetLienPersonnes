@@ -97,7 +97,7 @@ function LoginScreen({ onLogin }) {
       <div className="login-overlay">
         <div className="login-card">
           <div className="login-logo">◈</div>
-          <h1 className="login-title">Graphique</h1>
+          <h1 className="login-title">RelGraph</h1>
           <p className="login-sub">Entrez le mot de passe pour accéder</p>
           <div className="login-field">
             <input className="input login-input" type="password" placeholder="Mot de passe..."
@@ -164,9 +164,37 @@ function GraphCanvas({ nodes, edges, relTypes }) {
 
   const handleMouseUp = useCallback(() => setDragging(null), []);
 
+  const getSVGPoint = useCallback((clientX, clientY) => {
+    const svg = svgRef.current;
+    const pt  = svg.createSVGPoint();
+    pt.x = clientX; pt.y = clientY;
+    return pt.matrixTransform(svg.getScreenCTM().inverse());
+  }, []);
+
+  const handleTouchStart = useCallback((e, id) => {
+    e.preventDefault();
+    const touch = e.touches[0];
+    const svgP  = getSVGPoint(touch.clientX, touch.clientY);
+    setDragging(id);
+    setOffset({ x: svgP.x - (positions[id]?.x || 0), y: svgP.y - (positions[id]?.y || 0) });
+  }, [positions, getSVGPoint]);
+
+  const handleTouchMove = useCallback((e) => {
+    if (!dragging) return;
+    e.preventDefault();
+    const touch = e.touches[0];
+    const svgP  = getSVGPoint(touch.clientX, touch.clientY);
+    setPositions((prev) => ({
+      ...prev,
+      [dragging]: { x: svgP.x - offset.x, y: svgP.y - offset.y },
+    }));
+  }, [dragging, offset, getSVGPoint]);
+
   return (
       <svg ref={svgRef} viewBox="0 0 800 600" className="graph-svg"
-           onMouseMove={handleMouseMove} onMouseUp={handleMouseUp} onMouseLeave={handleMouseUp}>
+           onMouseMove={handleMouseMove} onMouseUp={handleMouseUp} onMouseLeave={handleMouseUp}
+           onTouchMove={(e) => handleTouchMove(e)} onTouchEnd={handleMouseUp}
+           style={{ touchAction: "none" }}>
         <defs>
           {relTypes.map((r) => (
               <marker key={r.id} id={`arrow-${r.id}`} markerWidth="8" markerHeight="8" refX="20" refY="3" orient="auto">
@@ -213,6 +241,7 @@ function GraphCanvas({ nodes, edges, relTypes }) {
           return (
               <g key={node.id} transform={`translate(${pos.x},${pos.y})`}
                  onMouseDown={(e) => handleMouseDown(e, node.id)}
+                 onTouchStart={(e) => handleTouchStart(e, node.id)}
                  style={{ cursor: dragging === node.id ? "grabbing" : "grab" }}>
                 <circle r={r} fill={node.color} stroke="#1e293b" strokeWidth="2.5" />
                 <circle r={r - 2} fill="none" stroke="white" strokeWidth="0.5" strokeOpacity="0.4" />
@@ -368,8 +397,8 @@ export default function App() {
       <div className="app">
         <header className="header">
           <div className="header-inner">
-            <span className="logo">◈ Graphique</span>
-            <p className="tagline"></p>
+            <span className="logo">◈ RelGraph</span>
+            <p className="tagline">Visualisez vos liens humains</p>
           </div>
           <div className="header-right">
             <span className="save-status save-status--saved">💾 Sauvegarde auto</span>
