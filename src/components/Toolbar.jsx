@@ -41,7 +41,7 @@ export default function Toolbar({ onAddEntity, onAddLink, onAddGroup }) {
         {!col && (
           <div className="toolbar-logo">
             <span className="logo-dot" />
-            <span className="logo-text">GraphApp</span>
+            <span className="logo-text">Flonugast</span>
           </div>
         )}
         <button className="toolbar-collapse-btn" onClick={toggleToolbar} title={col ? 'Ouvrir' : 'Réduire'}>

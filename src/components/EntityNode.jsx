@@ -1,13 +1,11 @@
 import React, { useRef, useState, useCallback } from 'react'
-import useGraphStore from '../store/useGraphStore.js'
+import useGraphStore from '../store/useGraphStore'
 
 const COLORS = {
-  cyan: '#4ec9b0',
-  blue: '#569cd6',
-  orange: '#ce9178',
-  purple: '#c586c0',
-  green: '#6a9955',
-  yellow: '#dcdcaa',
+  cyan: '#4ec9b0', blue: '#569cd6', orange: '#ce9178', purple: '#c586c0',
+  green: '#6a9955', yellow: '#dcdcaa', red: '#f44747', pink: '#f48fb1',
+  indigo: '#7986cb', teal: '#26a69a', lime: '#aed581', amber: '#ffca28',
+  coral: '#ff7043', sky: '#29b6f6', white: '#e0e0e0', gold: '#ffd700',
 }
 
 const PADDING = { x: 24, y: 16 }

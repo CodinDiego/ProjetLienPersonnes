@@ -2,12 +2,22 @@ import React, { useState, useEffect, useRef } from 'react'
 import useGraphStore from '../../store/useGraphStore'
 
 const COLORS = [
-  { id: 'blue', hex: '#569cd6', label: 'Bleu' },
-  { id: 'cyan', hex: '#4ec9b0', label: 'Cyan' },
-  { id: 'orange', hex: '#ce9178', label: 'Orange' },
-  { id: 'purple', hex: '#c586c0', label: 'Violet' },
-  { id: 'green', hex: '#6a9955', label: 'Vert' },
-  { id: 'yellow', hex: '#dcdcaa', label: 'Jaune' },
+  { id: 'blue',   hex: '#569cd6' },
+  { id: 'cyan',   hex: '#4ec9b0' },
+  { id: 'purple', hex: '#c586c0' },
+  { id: 'orange', hex: '#ce9178' },
+  { id: 'green',  hex: '#6a9955' },
+  { id: 'yellow', hex: '#dcdcaa' },
+  { id: 'red',    hex: '#f44747' },
+  { id: 'pink',   hex: '#f48fb1' },
+  { id: 'indigo', hex: '#7986cb' },
+  { id: 'teal',   hex: '#26a69a' },
+  { id: 'lime',   hex: '#aed581' },
+  { id: 'amber',  hex: '#ffca28' },
+  { id: 'coral',  hex: '#ff7043' },
+  { id: 'sky',    hex: '#29b6f6' },
+  { id: 'white',  hex: '#e0e0e0' },
+  { id: 'gold',   hex: '#ffd700' },
 ]
 
 export default function AddGroupModal({ onClose, editGroup }) {

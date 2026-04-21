@@ -1,24 +1,23 @@
 import React from 'react'
-import useGraphStore from '../store/useGraphStore.js'
-import { getEntityBounds } from './EntityNode.jsx'
+import useGraphStore from '../store/useGraphStore'
+import { getEntityBounds } from './EntityNode'
 
 const PADDING = 24
-const COLORS = {
-  blue: 'rgba(0, 122, 204, 0.35)',
-  cyan: 'rgba(78, 201, 176, 0.35)',
-  orange: 'rgba(206, 145, 120, 0.35)',
-  purple: 'rgba(197, 134, 192, 0.35)',
-  green: 'rgba(106, 153, 85, 0.35)',
-  yellow: 'rgba(220, 220, 170, 0.35)',
+const STROKE = {
+  blue: 'rgba(86,156,214,0.5)', cyan: 'rgba(78,201,176,0.5)', purple: 'rgba(197,134,192,0.5)',
+  orange: 'rgba(206,145,120,0.5)', green: 'rgba(106,153,85,0.5)', yellow: 'rgba(220,220,170,0.5)',
+  red: 'rgba(244,71,71,0.5)', pink: 'rgba(244,143,177,0.5)', indigo: 'rgba(121,134,203,0.5)',
+  teal: 'rgba(38,166,154,0.5)', lime: 'rgba(174,213,129,0.5)', amber: 'rgba(255,202,40,0.5)',
+  coral: 'rgba(255,112,67,0.5)', sky: 'rgba(41,182,246,0.5)', white: 'rgba(224,224,224,0.5)',
+  gold: 'rgba(255,215,0,0.5)',
 }
-
-const FILL_COLORS = {
-  blue: 'rgba(0, 122, 204, 0.06)',
-  cyan: 'rgba(78, 201, 176, 0.06)',
-  orange: 'rgba(206, 145, 120, 0.06)',
-  purple: 'rgba(197, 134, 192, 0.06)',
-  green: 'rgba(106, 153, 85, 0.06)',
-  yellow: 'rgba(220, 220, 170, 0.06)',
+const FILL = {
+  blue: 'rgba(86,156,214,0.06)', cyan: 'rgba(78,201,176,0.06)', purple: 'rgba(197,134,192,0.06)',
+  orange: 'rgba(206,145,120,0.06)', green: 'rgba(106,153,85,0.06)', yellow: 'rgba(220,220,170,0.06)',
+  red: 'rgba(244,71,71,0.06)', pink: 'rgba(244,143,177,0.06)', indigo: 'rgba(121,134,203,0.06)',
+  teal: 'rgba(38,166,154,0.06)', lime: 'rgba(174,213,129,0.06)', amber: 'rgba(255,202,40,0.06)',
+  coral: 'rgba(255,112,67,0.06)', sky: 'rgba(41,182,246,0.06)', white: 'rgba(224,224,224,0.06)',
+  gold: 'rgba(255,215,0,0.06)',
 }
 
 export default function GroupRect({ group, entities, scale }) {
@@ -35,9 +34,8 @@ export default function GroupRect({ group, entities, scale }) {
   const maxX = Math.max(...bounds.map(b => b.x + b.w)) + PADDING
   const maxY = Math.max(...bounds.map(b => b.y + b.h)) + PADDING
 
-  const strokeColor = COLORS[group.color] || COLORS.blue
-  const fillColor = FILL_COLORS[group.color] || FILL_COLORS.blue
-  const textColor = (COLORS[group.color] || COLORS.blue).replace('0.35', '0.9')
+  const strokeColor = STROKE[group.color] || STROKE.blue
+  const fillColor = FILL[group.color] || FILL.blue
 
   return (
     <div
@@ -59,7 +57,7 @@ export default function GroupRect({ group, entities, scale }) {
     >
       <span
         className="group-label"
-        style={{ color: textColor, background: 'var(--bg-primary)' }}
+        style={{ color: strokeColor.replace('0.5', '0.95'), background: 'var(--bg-primary)' }}
       >
         {group.name}
       </span>

@@ -1,11 +1,12 @@
 import React, { useState, useEffect, useCallback } from 'react'
-import useGraphStore from './store/useGraphStore.js'
-import Toolbar from './components/Toolbar.jsx'
-import Canvas from './components/Canvas.jsx'
-import ContextMenu from './components/ContextMenu.jsx'
-import AddEntityModal from './components/Modals/AddEntityModal.jsx'
-import AddLinkModal from './components/Modals/AddLinkModal.jsx'
-import AddGroupModal from './components/Modals/AddGroupModal.jsx'
+import useGraphStore from './store/useGraphStore'
+import Toolbar from './components/Toolbar'
+import Canvas from './components/Canvas'
+import ContextMenu from './components/ContextMenu'
+import AddEntityModal from './components/Modals/AddEntityModal'
+import AddLinkModal from './components/Modals/AddLinkModal'
+import AddGroupModal from './components/Modals/AddGroupModal'
+import MobileNav from './components/MobileNav'
 
 export default function App() {
   const { initTheme } = useGraphStore()
@@ -91,6 +92,12 @@ export default function App() {
       />
 
       <Canvas onContextMenu={openContextMenu} />
+
+      <MobileNav
+        onAddEntity={(entity) => setModal({ type: 'entity', data: entity || null })}
+        onAddLink={(link) => setModal({ type: 'link', data: link || null })}
+        onAddGroup={(group) => setModal({ type: 'group', data: group || null })}
+      />
 
       {/* Context menu */}
       {contextMenu && (

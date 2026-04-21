@@ -1,11 +1,11 @@
 import React, { useRef, useState, useEffect, useCallback } from 'react'
-import useGraphStore from '../store/useGraphStore.js'
-import EntityNode from './EntityNode.jsx'
-import LinkLine from './LinkLine.jsx'
-import GroupRect from './GroupRect.jsx'
+import useGraphStore from '../store/useGraphStore'
+import EntityNode from './EntityNode'
+import LinkLine from './LinkLine'
+import GroupRect from './GroupRect'
 
-const MIN_ZOOM = 0.08
-const MAX_ZOOM = 4
+const MIN_ZOOM = 0.15
+const MAX_ZOOM = 3
 const GRID_SIZE = 32
 
 function GridDots({ scale, offsetX, offsetY }) {

@@ -8,12 +8,22 @@ const SHAPES = [
 ]
 
 const COLORS = [
-  { id: 'cyan',   hex: '#4ec9b0', label: 'Cyan'   },
-  { id: 'blue',   hex: '#569cd6', label: 'Bleu'   },
-  { id: 'orange', hex: '#ce9178', label: 'Orange' },
-  { id: 'purple', hex: '#c586c0', label: 'Violet' },
-  { id: 'green',  hex: '#6a9955', label: 'Vert'   },
-  { id: 'yellow', hex: '#dcdcaa', label: 'Jaune'  },
+  { id: 'cyan',        hex: '#4ec9b0' },
+  { id: 'blue',        hex: '#569cd6' },
+  { id: 'purple',      hex: '#c586c0' },
+  { id: 'orange',      hex: '#ce9178' },
+  { id: 'green',       hex: '#6a9955' },
+  { id: 'yellow',      hex: '#dcdcaa' },
+  { id: 'red',         hex: '#f44747' },
+  { id: 'pink',        hex: '#f48fb1' },
+  { id: 'indigo',      hex: '#7986cb' },
+  { id: 'teal',        hex: '#26a69a' },
+  { id: 'lime',        hex: '#aed581' },
+  { id: 'amber',       hex: '#ffca28' },
+  { id: 'coral',       hex: '#ff7043' },
+  { id: 'sky',         hex: '#29b6f6' },
+  { id: 'white',       hex: '#e0e0e0' },
+  { id: 'gold',        hex: '#ffd700' },
 ]
 
 export default function AddEntityModal({ onClose, editEntity, initialPos }) {
@@ -55,7 +65,7 @@ export default function AddEntityModal({ onClose, editEntity, initialPos }) {
           <input
             ref={inputRef}
             className="form-input"
-            placeholder="ex: Antoine ;)"
+            placeholder="ex: Antoine"
             defaultValue={editEntity?.name || ''}
             onChange={e => { nameRef.current = e.target.value; setNameDisplay(e.target.value) }}
             onKeyDown={e => { if (e.key === 'Enter') submit(); if (e.key === 'Escape') onClose() }}
