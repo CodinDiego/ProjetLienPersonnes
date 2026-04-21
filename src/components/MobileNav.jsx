@@ -51,23 +51,23 @@ export default function MobileNav({ onAddEntity, onAddLink, onAddGroup }) {
                   <button className="mobile-action-btn" onClick={() => {
                     const e = entities.find(e => e.id === selectedIds[0])
                     if (e) { onAddEntity(e); close() }
-                  }}>✏️ Modifier</button>
+                  }}>Modifier</button>
                   <button className="mobile-action-btn danger" onClick={() => {
                     selectedIds.forEach(id => deleteEntity(id)); close()
-                  }}>🗑 Suppr. entité</button>
+                  }}>Suppr. entité</button>
                 </>}
                 {hasLinkSel && (
                   <button className="mobile-action-btn danger" onClick={() => { deleteLink(selectedLinkId); close() }}>
-                    🗑 Suppr. lien
+                    Suppr. lien
                   </button>
                 )}
                 {hasGroupSel && <>
                   <button className="mobile-action-btn" onClick={() => {
                     const g = groups.find(g => g.id === selectedGroupId)
                     if (g) { onAddGroup(g); close() }
-                  }}>✏️ Modifier groupe</button>
+                  }}> Modifier groupe</button>
                   <button className="mobile-action-btn danger" onClick={() => { deleteGroup(selectedGroupId); close() }}>
-                    🗑 Suppr. groupe
+                    Suppr. groupe
                   </button>
                 </>}
               </div>
@@ -93,7 +93,7 @@ export default function MobileNav({ onAddEntity, onAddLink, onAddGroup }) {
               if (confirm('Effacer tout ?')) { clearAll(); close() }
             }}>⊘ Tout suppr.</button>
             <button className="mobile-action-btn" onClick={() => { toggleTheme(); close() }}>
-              {theme === 'dark' ? '☀️ Clair' : '🌙 Sombre'}
+              {theme === 'dark' ? 'Clair' : 'Sombre'}
             </button>
           </div>
 

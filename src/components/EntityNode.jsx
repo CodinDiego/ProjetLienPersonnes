@@ -152,7 +152,7 @@ export default function EntityNode({ entity, scale }) {
     cursor: mode === 'linking'
       ? (linkingFrom === entity.id ? 'not-allowed' : 'crosshair')
       : 'grab',
-    zIndex: isSelected ? 10 : 5,
+    zIndex: isSelected ? 20 : 10,
   }
 
   return (

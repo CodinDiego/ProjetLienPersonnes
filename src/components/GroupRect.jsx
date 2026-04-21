@@ -20,7 +20,7 @@ const FILL = {
   gold: 'rgba(255,215,0,0.06)',
 }
 
-export default function GroupRect({ group, entities, scale }) {
+export default function GroupRect({ group, entities }) {
   const { selectedGroupId, selectGroup } = useGraphStore()
   const isSelected = selectedGroupId === group.id
 
@@ -35,29 +35,49 @@ export default function GroupRect({ group, entities, scale }) {
   const maxY = Math.max(...bounds.map(b => b.y + b.h)) + PADDING
 
   const strokeColor = STROKE[group.color] || STROKE.blue
-  const fillColor = FILL[group.color] || FILL.blue
+  const fillColor   = FILL[group.color]   || FILL.blue
+  const w = maxX - minX
+  const h = maxY - minY
 
   return (
     <div
       className={`group-rect${isSelected ? ' selected' : ''}`}
       style={{
-        left: minX,
-        top: minY,
-        width: maxX - minX,
-        height: maxY - minY,
+        left: minX, top: minY, width: w, height: h,
         borderColor: strokeColor,
         background: fillColor,
-        zIndex: 1,
+        zIndex: 1,                   // below links (2) and entities (5+)
         outline: isSelected ? `2px solid ${strokeColor}` : 'none',
         outlineOffset: 2,
-        cursor: 'pointer',
-        pointerEvents: 'all',
+        // Fill is transparent to clicks — only the border + label respond
+        pointerEvents: 'none',
+        cursor: 'default',
       }}
-      onClick={(e) => { e.stopPropagation(); selectGroup(group.id) }}
     >
+      {/* Clickable border strip via inner absolute overlay */}
+      <div
+        style={{
+          position: 'absolute', inset: 0,
+          border: '12px solid transparent',
+          borderRadius: 'inherit',
+          boxSizing: 'border-box',
+          cursor: 'pointer',
+          pointerEvents: 'all',
+          zIndex: 2,
+        }}
+        onClick={(e) => { e.stopPropagation(); selectGroup(group.id) }}
+      />
       <span
         className="group-label"
-        style={{ color: strokeColor.replace('0.5', '0.95'), background: 'var(--bg-primary)' }}
+        style={{
+          color: strokeColor.replace('0.5', '0.95'),
+          background: 'var(--bg-primary)',
+          pointerEvents: 'all',
+          cursor: 'pointer',
+          zIndex: 3,
+          position: 'relative',
+        }}
+        onClick={(e) => { e.stopPropagation(); selectGroup(group.id) }}
       >
         {group.name}
       </span>

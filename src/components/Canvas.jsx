@@ -221,7 +221,7 @@ export default function Canvas({ onContextMenu }) {
         style={{ transform: `translate(${offset.x}px,${offset.y}px) scale(${scale})`, transformOrigin: '0 0' }}
       >
         {groups.map(g => <GroupRect key={g.id} group={g} entities={entities} />)}
-        <svg style={{ position:'absolute', top:0, left:0, overflow:'visible', width:0, height:0, pointerEvents:'none' }}>
+        <svg style={{ position:'absolute', top:0, left:0, overflow:'visible', width:0, height:0, pointerEvents:'all' }}>
           {links.map(link => <LinkLine key={link.id} link={link} entities={entities} />)}
         </svg>
         {entities.map(entity => <EntityNode key={entity.id} entity={entity} scale={scale} />)}

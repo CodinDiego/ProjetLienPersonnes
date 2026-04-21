@@ -24,17 +24,17 @@ export default function ContextMenu({ x, y, target, onClose, onEdit }) {
       { icon: '', label: 'Modifier', action: () => { onEdit(target); onClose() } },
       { icon: '⟶', label: 'Créer un lien depuis...', action: () => { startLinking(target.id); onClose() } },
       { separator: true },
-      { icon: '🗑', label: 'Supprimer l\'entité', danger: true, action: () => { deleteEntity(target.id); onClose() } },
+      { icon: '', label: 'Supprimer l\'entité', danger: true, action: () => { deleteEntity(target.id); onClose() } },
     )
   } else if (target?.type === 'link') {
     items.push(
-      { icon: '🗑', label: 'Supprimer le lien', danger: true, action: () => { deleteLink(target.id); onClose() } },
+      { icon: '', label: 'Supprimer le lien', danger: true, action: () => { deleteLink(target.id); onClose() } },
     )
   } else if (target?.type === 'group') {
     items.push(
       { icon: '', label: 'Modifier le groupe', action: () => { onEdit(target); onClose() } },
       { separator: true },
-      { icon: '🗑', label: 'Supprimer le groupe', danger: true, action: () => { deleteGroup(target.id); onClose() } },
+      { icon: '', label: 'Supprimer le groupe', danger: true, action: () => { deleteGroup(target.id); onClose() } },
     )
   } else {
     items.push(

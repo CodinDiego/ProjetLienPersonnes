@@ -40,7 +40,7 @@ export default function Toolbar({ onAddEntity, onAddLink, onAddGroup }) {
       <div className="toolbar-header">
         {!col && (
           <div className="toolbar-logo">
-            <span className="logo-dot" />
+
             <span className="logo-text">Flonugast</span>
           </div>
         )}
@@ -87,7 +87,7 @@ export default function Toolbar({ onAddEntity, onAddLink, onAddGroup }) {
                 const entity = entities.find(e => e.id === selectedIds[0])
                 if (entity) onAddEntity(entity)
               }} title="Modifier l'entité">
-                <span className="btn-icon">✏️</span>
+                <span className="btn-icon">️</span>
                 {!col && <span className="btn-label">Modifier entité</span>}
               </button>
               <button
@@ -95,14 +95,14 @@ export default function Toolbar({ onAddEntity, onAddLink, onAddGroup }) {
                 onClick={() => selectedIds.forEach(id => deleteEntity(id))}
                 title="Supprimer"
               >
-                <span className="btn-icon">🗑</span>
+                <span className="btn-icon"></span>
                 {!col && <span className="btn-label">Supprimer entité</span>}
               </button>
             </>
           )}
           {hasLinkSel && (
             <button className="toolbar-btn danger" onClick={() => deleteLink(selectedLinkId)} title="Supprimer le lien">
-              <span className="btn-icon">🗑</span>
+              <span className="btn-icon"></span>
               {!col && <span className="btn-label">Supprimer lien</span>}
             </button>
           )}
@@ -116,7 +116,7 @@ export default function Toolbar({ onAddEntity, onAddLink, onAddGroup }) {
                 {!col && <span className="btn-label">Modifier groupe</span>}
               </button>
               <button className="toolbar-btn danger" onClick={() => deleteGroup(selectedGroupId)} title="Supprimer le groupe">
-                <span className="btn-icon">🗑</span>
+                <span className="btn-icon"></span>
                 {!col && <span className="btn-label">Supprimer groupe</span>}
               </button>
             </>
@@ -145,7 +145,7 @@ export default function Toolbar({ onAddEntity, onAddLink, onAddGroup }) {
       {/* Footer */}
       <div className="toolbar-footer">
         <button className="theme-btn" onClick={toggleTheme} title="Changer le thème">
-          <span className="btn-icon" style={{ fontSize: 16 }}>{theme === 'dark' ? '☀️' : '🌙'}</span>
+          <span className="btn-icon" style={{ fontSize: 16 }}>{theme === 'dark' ? '' : ''}</span>
           {!col && <span>{theme === 'dark' ? 'Mode clair' : 'Mode sombre'}</span>}
         </button>
       </div>
