@@ -220,10 +220,15 @@ export default function Canvas({ onContextMenu }) {
         className="canvas-inner"
         style={{ transform: `translate(${offset.x}px,${offset.y}px) scale(${scale})`, transformOrigin: '0 0' }}
       >
-        {groups.map(g => <GroupRect key={g.id} group={g} entities={entities} />)}
+        {/* SVG layer: groups (bottom) + links (middle) — order matters */}
         <svg style={{ position:'absolute', top:0, left:0, overflow:'visible', width:0, height:0, pointerEvents:'all' }}>
+          {/* Groups first = lowest z-order in SVG */}
+          {groups.map(g => <GroupRect key={g.id} group={g} entities={entities} />)}
+          {/* Links on top of groups */}
           {links.map(link => <LinkLine key={link.id} link={link} entities={entities} />)}
         </svg>
+
+        {/* Entities as HTML divs = always above SVG */}
         {entities.map(entity => <EntityNode key={entity.id} entity={entity} scale={scale} />)}
       </div>
 
